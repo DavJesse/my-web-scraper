@@ -2,18 +2,27 @@ package main
 
 import (
 	"log"
-	"my-web-scraper/models"
-	"my-web-scraper/store"
 	"net/http"
 	"strings"
+
+	"my-web-scraper/models"
+	"my-web-scraper/services"
+	"my-web-scraper/store"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 func main() {
-	var listings []models.CarListing
-	response, err := http.Get("https://jiji.co.ke/cars")
+	// Launch headless browser and create a new remote client instance
+	wd, err := services.LaunchHeadlessBrowser()
+	if err != nil {
+		log.Fatal("Failed to Create New Remote Client: ", err)
+	}
+	defer wd.Quit()
 
+	var listings []models.CarListing
+
+	response, err := http.Get("https://jiji.co.ke/cars")
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -34,10 +43,10 @@ func main() {
 		listing.Description = strings.TrimSpace(s.Find(".b-list-advert-base__description-text").Text())
 		listing.Location = strings.TrimSpace(s.Find(".b-list-advert__region__text").Text())
 		listing.Condition = strings.TrimSpace(s.Find(".b-list-advert-base__item-attr").Text())
-		
+
 		// Append listing to the listings
 		listings = append(listings, listing)
 	})
-	
+
 	store.SaveToJSON(listings)
 }
