@@ -20,10 +20,6 @@ func main() {
 	}
 	defer response.Body.Close()
 
-	var records []string
-
-	records = append(records, "Title")
-
 	doc, err := goquery.NewDocumentFromReader(response.Body)
 	if err != nil {
 		log.Fatal(err)
@@ -41,5 +37,5 @@ func main() {
 		listings = append(listings, listing)
 	})
 	
-	store.SaveToJSON(records)
+	store.SaveToJSON(listings)
 }
