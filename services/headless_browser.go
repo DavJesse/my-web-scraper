@@ -2,7 +2,9 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/chromedp/chromedp"
@@ -10,10 +12,10 @@ import (
 
 func LaunchHeadlessBrowser() (context.Context, context.CancelFunc) {
 	// Create a new context
-	// ctx, _ := chromedp.NewContext(
-	// 	context.Background(),
-	// 	chromedp.WithLogf(log.Printf),
-	// )
+	ctx, _ := chromedp.NewContext(
+		context.Background(),
+		chromedp.WithLogf(customLogger),
+	)
 
 	// Create a timeout
 	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
@@ -31,4 +33,11 @@ func LaunchHeadlessBrowser() (context.Context, context.CancelFunc) {
 
 	log.Println("Headless browser launched successfully")
 	return ctx, cancel
+}
+
+func customLogger(format string, args ...interface{}) {
+	msg := fmt.Sprintf(format, args...)
+	if !strings.Contains(msg, "could not unmarshal event") {
+		log.Printf(format, args...)
+	}
 }
