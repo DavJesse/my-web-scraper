@@ -25,7 +25,7 @@ func main() {
 
 	// Navigate to web page
 	err := chromedp.Run(ctx,
-		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/cars"),
+		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/buses"),
 		chromedp.WaitVisible(".b-list-advert-base__data", chromedp.ByQuery),
 	)
 	if err != nil {

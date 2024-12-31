@@ -10,17 +10,17 @@ import (
 
 func LaunchHeadlessBrowser() (context.Context, context.CancelFunc) {
 	// Create a new context
-	ctx, cancel := chromedp.NewContext(
-		context.Background(),
-		chromedp.WithLogf(log.Printf),
-	)
+	// ctx, _ := chromedp.NewContext(
+	// 	context.Background(),
+	// 	chromedp.WithLogf(log.Printf),
+	// )
 
 	// Create a timeout
-	ctx, cancel = context.WithTimeout(ctx, 15*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 
 	// Navigate to a page to ensure the browser is working
 	err := chromedp.Run(ctx,
-		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/cars"),
+		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/buses"),
 		chromedp.WaitVisible(`body`, chromedp.ByQuery),
 	)
 	if err != nil {
