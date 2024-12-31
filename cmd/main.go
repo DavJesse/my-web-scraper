@@ -14,8 +14,9 @@ import (
 )
 
 func main() {
+	path := "https://jiji.co.ke/mombasa-cbd/buses"
 	// Launch headless browser
-	ctx, cancel := services.LaunchHeadlessBrowser()
+	ctx, cancel := services.LaunchHeadlessBrowser(path)
 	if ctx == nil {
 		log.Fatal("Failed to launch browser")
 	}
@@ -25,14 +26,14 @@ func main() {
 
 	// Navigate to web page
 	err := chromedp.Run(ctx,
-		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/buses"),
-		chromedp.WaitVisible(".b-list-advert-base__data", chromedp.ByQuery),
+		chromedp.Navigate(path),
+		chromedp.WaitVisible(".b-list-advert-base__data__inner", chromedp.ByQuery),
 	)
 	if err != nil {
 		log.Fatal("Failed to navigate to webpage: ", err)
 	}
 
-	for len(listings) < 100 {
+	for len(listings) < 1000 {
 		// Scroll to bottom of the page to load more
 		err = chromedp.Run(ctx,
 			chromedp.Evaluate(`window.scrollTo(0, document.body.scrollHeight);`, nil),
@@ -45,7 +46,7 @@ func main() {
 		// Find all car listings on the page
 		var elements []*cdp.Node
 		err = chromedp.Run(ctx,
-			chromedp.Nodes(".b-list-advert-base__data", &elements, chromedp.ByQueryAll),
+			chromedp.Nodes(".masonry-item", &elements, chromedp.ByQueryAll),
 		)
 		if err != nil {
 			log.Fatal("Failed to find elements: ", err)
