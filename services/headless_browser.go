@@ -20,7 +20,7 @@ func LaunchHeadlessBrowser() (context.Context, context.CancelFunc) {
 
 	// Navigate to a page to ensure the browser is working
 	err := chromedp.Run(ctx,
-		chromedp.Navigate(`https://example.com`),
+		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/cars"),
 		chromedp.WaitVisible(`body`, chromedp.ByQuery),
 	)
 	if err != nil {
