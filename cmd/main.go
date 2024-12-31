@@ -29,7 +29,7 @@ func main() {
 		chromedp.WaitVisible(".b-list-advert-base__data", chromedp.ByQuery),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to navigate to webpage: ", err)
 	}
 
 	for len(listings) < 100 {
