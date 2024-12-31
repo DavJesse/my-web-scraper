@@ -9,66 +9,67 @@ import (
 	"my-web-scraper/services"
 	"my-web-scraper/store"
 
-	"github.com/tebeka/selenium"
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/chromedp"
 )
 
 func main() {
-	// Launch headless browser and create a new remote client instance
-	wd, err := services.LaunchHeadlessBrowser()
-	if err != nil {
-		log.Fatal("Failed to Create New Remote Client: ", err)
+	// Launch headless browser
+	ctx, cancel := services.LaunchHeadlessBrowser()
+	if ctx == nil {
+		log.Fatal("Failed to launch browser")
 	}
-	defer wd.Quit()
+	defer cancel()
 
 	var listings []models.CarListing
 
 	// Navigate to web page
-	err = wd.Get("https://jiji.co.ke/mombasa-cbd/cars")
+	err := chromedp.Run(ctx,
+		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/cars"),
+		chromedp.WaitVisible(".b-list-advert-base__data", chromedp.ByQuery),
+	)
 	if err != nil {
 		log.Fatal(err)
-		return
 	}
 
 	for len(listings) < 100 {
 		// Scroll to bottom of the page to load more
-		if _, err := wd.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);", nil); err != nil {
-			log.Fatal("Failed to Execute Scroll Script: ", err)
+		err = chromedp.Run(ctx,
+			chromedp.Evaluate(`window.scrollTo(0, document.body.scrollHeight);`, nil),
+			chromedp.Sleep(2*time.Second), // Wait for content to load
+		)
+		if err != nil {
+			log.Fatal("Failed to scroll: ", err)
 		}
 
-		// Wait for contents to load
-		time.Sleep(time.Second * 2)
-
 		// Find all car listings on the page
-		elements, err := wd.FindElements(selenium.ByCSSSelector, ".b-list-advert-base__data")
+		var elements []*cdp.Node
+		err = chromedp.Run(ctx,
+			chromedp.Nodes(".b-list-advert-base__data", &elements, chromedp.ByQueryAll),
+		)
 		if err != nil {
-			log.Fatal("Failed to Find Elements: ", err)
+			log.Fatal("Failed to find elements: ", err)
 		}
 
 		newListings := len(elements)
-		// break loop when no new content
 		if newListings <= len(listings) {
 			break
 		}
 
 		// Scrape listings
 		for i := len(listings); i < newListings; i++ {
-			element := elements[i]
 			listing := models.CarListing{}
 
-			if title, err := element.FindElement(selenium.ByCSSSelector, ".b-advert-title-inner.qa-advert-title.b-advert-title-inner--div"); err == nil {
-				listing.Title, _ = title.Text()
-			}
-			if price, err := element.FindElement(selenium.ByCSSSelector, ".qa-advert-price"); err == nil {
-				listing.Price, _ = price.Text()
-			}
-			if description, err := element.FindElement(selenium.ByCSSSelector, ".b-list-advert-base__description-text"); err == nil {
-				listing.Description, _ = description.Text()
-			}
-			if location, err := element.FindElement(selenium.ByCSSSelector, ".b-list-advert__region__text"); err == nil {
-				listing.Location, _ = location.Text()
-			}
-			if condition, err := element.FindElement(selenium.ByCSSSelector, ".b-list-advert-base__item-attr"); err == nil {
-				listing.Condition, _ = condition.Text()
+			err = chromedp.Run(ctx,
+				chromedp.Text(".b-advert-title-inner.qa-advert-title.b-advert-title-inner--div", &listing.Title, chromedp.ByQuery, chromedp.FromNode(elements[i])),
+				chromedp.Text(".qa-advert-price", &listing.Price, chromedp.ByQuery, chromedp.FromNode(elements[i])),
+				chromedp.Text(".b-list-advert-base__description-text", &listing.Description, chromedp.ByQuery, chromedp.FromNode(elements[i])),
+				chromedp.Text(".b-list-advert__region__text", &listing.Location, chromedp.ByQuery, chromedp.FromNode(elements[i])),
+				chromedp.Text(".b-list-advert-base__item-attr", &listing.Condition, chromedp.ByQuery, chromedp.FromNode(elements[i])),
+			)
+			if err != nil {
+				log.Printf("Error scraping listing: %v", err)
+				continue
 			}
 
 			// Trim leading and trailing whitespaces from fields for uniformity/readability
