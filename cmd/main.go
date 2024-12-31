@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"my-web-scraper/cmd/store"
+	"my-web-scraper/store"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
@@ -10,6 +10,7 @@ import (
 
 func main() {
 	response, err := http.Get("https://jiji.co.ke/cars")
+	var title string
 
 	if err != nil {
 		log.Fatal(err)
@@ -26,10 +27,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	doc.Find("div").Each(func(i int, s *goquery.Selection) {
-		title := s.Text()
-		// fmt.Printf("Title %d: %s\n", i+1, title)
-		records = append(records, title)
+	doc.Find(".b-list-advert-base__data").Each(func(i int, s *goquery.Selection) {
+		title = s.Text()
+        records = append(records, title)
 	})
+	
 	store.SaveToJSON(records)
 }
