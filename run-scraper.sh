@@ -1,2 +1,2 @@
 #!/bin/sh
-go run cmd/main.go
+go run cmd/scraper/main.go
