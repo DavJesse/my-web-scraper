@@ -10,7 +10,7 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-func LaunchHeadlessBrowser() (context.Context, context.CancelFunc) {
+func LaunchHeadlessBrowser(path string) (context.Context, context.CancelFunc) {
 	// Create a new context
 	ctx, _ := chromedp.NewContext(
 		context.Background(),
@@ -22,7 +22,7 @@ func LaunchHeadlessBrowser() (context.Context, context.CancelFunc) {
 
 	// Navigate to a page to ensure the browser is working
 	err := chromedp.Run(ctx,
-		chromedp.Navigate("https://jiji.co.ke/mombasa-cbd/buses"),
+		chromedp.Navigate(path),
 		chromedp.WaitVisible(`body`, chromedp.ByQuery),
 	)
 	if err != nil {
