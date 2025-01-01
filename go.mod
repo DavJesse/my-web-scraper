@@ -6,7 +6,10 @@ toolchain go1.23.2
 
 require github.com/PuerkitoBio/goquery v1.10.0
 
-require github.com/chromedp/chromedp v0.11.2
+require (
+	github.com/chromedp/cdproto v0.0.0-20241222144035-c16d098c0fb6
+	github.com/chromedp/chromedp v0.11.2
+)
 
 require (
 	github.com/chromedp/sysutil v1.1.0 // indirect
@@ -20,6 +23,5 @@ require (
 
 require (
 	github.com/andybalholm/cascadia v1.3.2 // indirect
-	github.com/chromedp/cdproto v0.0.0-20241222144035-c16d098c0fb6 // indirect
 	golang.org/x/net v0.29.0 // indirect
 )
