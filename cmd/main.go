@@ -12,7 +12,9 @@ import (
 
 func main() {
 	var listings []models.CarListing
-	response, err := http.Get("https://jiji.co.ke/cars")
+	path := "https://jiji.co.ke/cars"
+	targetDiv := ".b-list-advert-base__data__inner"
+	response, err := http.Get(path)
 
 	if err != nil {
 		log.Fatal(err)
@@ -25,7 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	doc.Find(".b-list-advert-base__data__inner").Each(func(i int, s *goquery.Selection) {
+	doc.Find(targetDiv).Each(func(i int, s *goquery.Selection) {
 		listing := models.CarListing{}
 
 		// Extract title, Price, Description, and Location
