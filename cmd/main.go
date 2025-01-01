@@ -29,7 +29,7 @@ func main() {
 		listing := models.CarListing{}
 
 		// Extract title, Price, Description, and Location
-		listing.Title = strings.TrimSpace(s.Find("b-advert-title-inner qa-advert-title b-advert-title-inner--div").Text())
+		listing.Title = strings.TrimSpace(s.Find(".b-advert-title-inner.qa-advert-title.b-advert-title-inner--div").Text())
 		listing.Price = strings.TrimSpace(s.Find(".qa-advert-price").Text())
 		listing.Description = strings.TrimSpace(s.Find(".b-list-advert-base__description-text").Text())
 		listing.Location = strings.TrimSpace(s.Find(".b-list-advert__region__text").Text())
