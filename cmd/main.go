@@ -25,7 +25,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	doc.Find(".b-list-advert-base__data").Each(func(i int, s *goquery.Selection) {
+	doc.Find(".b-list-advert-base__data__inner").Each(func(i int, s *goquery.Selection) {
 		listing := models.CarListing{}
 
 		// Extract title, Price, Description, and Location
