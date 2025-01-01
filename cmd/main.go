@@ -33,6 +33,7 @@ func main() {
 		listing.Price = strings.TrimSpace(s.Find(".qa-advert-price").Text())
 		listing.Description = strings.TrimSpace(s.Find(".b-list-advert-base__description-text").Text())
 		listing.Location = strings.TrimSpace(s.Find(".b-list-advert__region__text").Text())
+		listing.Condition = strings.TrimSpace(s.Find(".b-list-advert-base__item-attr").Text())
 
 		listings = append(listings, listing)
 	})
