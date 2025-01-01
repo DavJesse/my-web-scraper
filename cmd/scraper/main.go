@@ -13,7 +13,7 @@ func main() {
 	targetDiv := ".b-list-advert-base__data__inner"
 
 	// Scrape car listings, handle necessary errors
-	listings, err := services.ScrapeData(path, targetDiv)
+	listings, err := services.ScrapeDataWithGoQuery(path, targetDiv)
 	if err != nil {
 		log.Fatalf("Failed to scrape data from %s: %v.", path, err)
 	}

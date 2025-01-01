@@ -13,7 +13,7 @@ func main() {
 	targetDiv := ".b-list-advert-base__data__inner"
 
 	// Scrape data from web page, handle errors if encountered
-	listings, err := services.ScrapeData(path, targetDiv)
+	listings, err := services.ScrapeDataWithHeadless(path, targetDiv)
 	if err != nil {
 		log.Fatal(err)
 	}

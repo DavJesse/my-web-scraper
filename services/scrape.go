@@ -2,11 +2,16 @@ package services
 
 import (
 	"fmt"
-	"my-web-scraper/models"
+	"log"
 	"net/http"
 	"strings"
+	"time"
+
+	"my-web-scraper/models"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/chromedp"
 )
 
 func ScrapeDataWithGoQuery(path, targetDiv string) ([]models.CarListing, error) {
@@ -38,6 +43,7 @@ func ScrapeDataWithGoQuery(path, targetDiv string) ([]models.CarListing, error) 
 
 		listings = append(listings, listing)
 	})
+	return listings, nil
 }
 
 func ScrapeDataWithHeadless(path, targetDiv string) ([]models.CarListing, error) {
