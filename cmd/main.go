@@ -15,8 +15,9 @@ import (
 
 func main() {
 	path := "https://jiji.co.ke/mombasa-cbd/buses"
+	targetDiv := ".b-list-advert-base__data__inner"
 	// Launch headless browser
-	ctx, cancel := services.LaunchHeadlessBrowser(path)
+	ctx, cancel := services.LaunchHeadlessBrowser(path, targetDiv)
 	if ctx == nil {
 		log.Fatal("Failed to launch browser")
 	}
@@ -27,7 +28,7 @@ func main() {
 	// Navigate to web page
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(path),
-		chromedp.WaitVisible(".b-list-advert-base__data__inner", chromedp.ByQuery),
+		chromedp.WaitVisible(targetDiv, chromedp.ByQuery),
 	)
 	if err != nil {
 		log.Fatal("Failed to navigate to webpage: ", err)
